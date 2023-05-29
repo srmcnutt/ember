@@ -4,6 +4,8 @@ import (
 	"crypto/tls"
 	"encoding/json"
 	"fmt"
+	"github.com/fatih/color"
+	"github.com/rodaine/table"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -24,10 +26,7 @@ func main() {
 	initEndpoints()
 	banner()
 	devices := getDevices()
-	fmt.Println("Device Name, Model, Version, Connected")
-	for i := range devices {
-		fmt.Println(devices[i].Name, devices[i].Model, devices[i].SwVersion, devices[i].IsConnected)
-	}
+	printTable(devices)
 	fmt.Println("\n Total number of sensors: ", len(devices))
 }
 
@@ -192,19 +191,34 @@ func getDevices() []Device {
 	return x
 }
 
+func printTable(devices []Device) {
+	headerFmt := color.New(color.FgGreen, color.Underline).SprintfFunc()
+	columnFmt := color.New(color.FgYellow).SprintfFunc()
+
+	tbl := table.New("Name", "Model", "Software Version", "Is Connected")
+	tbl.WithHeaderFormatter(headerFmt).WithFirstColumnFormatter(columnFmt)
+
+	for _, device := range devices {
+		tbl.AddRow(device.Name, device.Model, device.SwVersion, device.IsConnected)
+	}
+
+	tbl.Print()
+}
+
 var art string = `
 
 
-███████╗██╗██████╗ ███████╗ ████████╗
-██╔════╝██║██╔══██╗██╔════╝ ╚══██╔══╝
-█████╗  ██║██████╔╝█████╗█████╗██║   
-██╔══╝  ██║██╔══██╗██╔══╝╚════╝██║   
-██║     ██║██║  ██║███████╗    ██║   
-╚═╝     ╚═╝╚═╝  ╚═╝╚══════╝    ╚═╝   
-                                     v0.1
-
-
-Firepower Toolbox 
- - by Steven McNutt, CCIE #6495. @densem0de on twitterz
-
+███████╗███╗   ███╗██████╗ ███████╗██████╗ 
+██╔════╝████╗ ████║██╔══██╗██╔════╝██╔══██╗
+█████╗  ██╔████╔██║██████╔╝█████╗  ██████╔╝
+██╔══╝  ██║╚██╔╝██║██╔══██╗██╔══╝  ██╔══██╗
+███████╗██║ ╚═╝ ██║██████╔╝███████╗██║  ██║
+╚══════╝╚═╝     ╚═╝╚═════╝ ╚══════╝╚═╝  ╚═╝ v0.1
+                                           
+Ember - A Cisco FMC API Client by Steven McNutt CCIE #6495
+  { 
+    Twitter:  @densem0de,
+    Github:   srmcnutt,
+    mastodon: @densemode@infosec.exchange,
+  }
 `

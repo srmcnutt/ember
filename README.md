@@ -1,6 +1,6 @@
-Fire-T is currently a super basic tool written in Go that will query Cisco Firepower Management Center for a list of devices, then output a summarized list.
+Ember is currently a tool written in Go that will query Cisco Firepower Management Center for a list of devices, then output a summarized list.
 
-Requirements:
+## Requirements:
 To run it requires 3 environment variables to be set:
 - FMC_HOST
 - FMC_USER
@@ -8,14 +8,17 @@ To run it requires 3 environment variables to be set:
 
 Also the REST API needs to be enabled on FMC
 
-Usage:
+## Usage:
 Set the environment variables
 Run the program
 
-Binaries for windows, mac, and linux are available under the *shocked face* binaries folder.
+Binaries for windows, mac, and linux are available under the :*shocked face*: binaries folder.
 
-TODOs
-In the future if I have time to work on it, I'll make it a lot nicer and allow the creds to be entered interactively, output the device list as a table, add other functions, etc.
+## TODOs
+- allow creds to be entered interactively
+- unit tests
+- additional features (shoot me some ideas or even better make a pull request)
+
 
 
 
