@@ -4,12 +4,15 @@ import (
 	"crypto/tls"
 	"encoding/json"
 	"fmt"
-	"github.com/fatih/color"
-	"github.com/rodaine/table"
+	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
+	"strings"
+
+	"github.com/fatih/color"
+	"github.com/rodaine/table"
 )
 
 // store credentials in a map for easy retrieval
@@ -22,7 +25,11 @@ func main() {
 	creds = getEnv()
 	banner()
 	initEndpoints()
-	getAuthToken(endPoints["auth"])
+	if !strings.Contains(creds["fmc_host"], "cdo.cisco.com") {
+		getAuthToken(endPoints["auth"])
+	} else {
+		creds["domain"] = getDomains(creds["fmc_host"])[0].ID
+	}
 	// need to init a second time now that we have the uuid for the domain
 	initEndpoints()
 	devices := getDevices()
@@ -42,8 +49,10 @@ func getEnv() map[string]string {
 	}
 
 	if creds["fmc_user"] == "" {
-		fmt.Println("FMC_USER Environment Variable missing!")
-		os.Exit(1)
+		if !strings.Contains(creds["fmc_host"], "cdo.cisco.com") {
+			fmt.Println("FMC_USER Environment Variable missing!")
+			os.Exit(1)
+		}
 	}
 
 	if creds["fmc_password"] == "" {
@@ -56,7 +65,6 @@ func getEnv() map[string]string {
 // print banner
 func banner() {
 	fmt.Println(art)
-	return
 }
 
 // populate endpoints map
@@ -83,10 +91,19 @@ func fmcCall(url string) []byte {
 	}
 
 	// build header
-	req.Header = http.Header{
-		"Content-Type":        {"application/json"},
-		"Accept":              {"application/json"},
-		"X-auth-access-token": {creds["token"]},
+	if !strings.Contains(creds["fmc_host"], "cdo.cisco.com") {
+		req.Header = http.Header{
+			"Content-Type":        {"application/json"},
+			"Accept":              {"application/json"},
+			"X-auth-access-token": {creds["token"]},
+		}
+	} else {
+		var bearer = "Bearer " + creds["fmc_password"]
+		req.Header = http.Header{
+			"Content-Type":  {"application/json"},
+			"Accept":        {"application/json"},
+			"Authorization": {bearer},
+		}
 	}
 
 	// add some parameters to the request
@@ -116,6 +133,69 @@ func fmcCall(url string) []byte {
 	//fmt.Println(string(b))
 	//fmt.Println(url)
 	return b
+}
+
+func getResponse(url string) APIResponse {
+	// make a transport
+	tr := &http.Transport{
+		TLSClientConfig: &tls.Config{
+			InsecureSkipVerify: true},
+	}
+
+	// make a client
+	client := &http.Client{Transport: tr}
+
+	// set up request
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		panic(err)
+	}
+
+	// build header
+	if !strings.Contains(creds["fmc_host"], "cdo.cisco.com") {
+		req.Header = http.Header{
+			"Content-Type":        {"application/json"},
+			"Accept":              {"application/json"},
+			"X-auth-access-token": {creds["token"]},
+		}
+	} else {
+		var bearer = "Bearer " + creds["fmc_password"]
+		req.Header = http.Header{
+			"Content-Type":  {"application/json"},
+			"Accept":        {"application/json"},
+			"Authorization": {bearer},
+		}
+	}
+
+	// execute request & assign to res variable
+	res, err := client.Do(req)
+	if err != nil {
+		panic(err)
+	}
+
+	//response body
+	defer res.Body.Close()
+
+	// store the domain from the response body
+	body, err := io.ReadAll(res.Body)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	//fmt.Println(string(body))
+	var r APIResponse
+	json.Unmarshal(body, &r)
+
+	return r
+}
+
+func getDomains(baseUrl string) []Domain {
+	url := "https://" + baseUrl + "/api/fmc_platform/v1/info/domain"
+	r := getResponse(url)
+	var domains []Domain
+	domainJson, _ := json.Marshal(r.Items)
+	json.Unmarshal(domainJson, &domains)
+
+	return domains
 }
 
 func getAuthToken(url string) {

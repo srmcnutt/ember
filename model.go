@@ -1,5 +1,24 @@
 package main
 
+type APIResponse struct {
+	Links struct {
+		Self string `json:"self"`
+	} `json:"links"`
+	Items  []map[string]string
+	Paging struct {
+		Offset int `json:"offset"`
+		Limit  int `json:"limit"`
+		Count  int `json:"count"`
+		Pages  int `json:"pages"`
+	} `json:"paging"`
+}
+
+type Domain struct {
+	Name string `json:"name"`
+	ID   string `json:"uuid"`
+	Type string `json:"type"`
+}
+
 type DeviceList struct {
 	Links struct {
 		Self string `json:"self"`
@@ -60,12 +79,8 @@ type Device struct {
 			CPUType    string `json:"cpuType"`
 			MemoryInMB string `json:"memoryInMB"`
 		} `json:"inventoryData"`
-		DeviceSerialNumber string `json:"deviceSerialNumber"`
-		Domain             struct {
-			Name string `json:"name"`
-			ID   string `json:"id"`
-			Type string `json:"type"`
-		} `json:"domain"`
+		DeviceSerialNumber        string `json:"deviceSerialNumber"`
+		Domain                    Domain `json:"domain"`
 		IsMultiInstance           bool   `json:"isMultiInstance"`
 		SnortVersion              string `json:"snortVersion"`
 		VdbVersion                string `json:"vdbVersion"`
