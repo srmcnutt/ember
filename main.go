@@ -151,14 +151,10 @@ func getAuthToken(url string) {
 		panic(err)
 	}
 
-	// dump the header
-	//fmt.Println(res.Header["X-Auth-Access-Token"])
-	//fmt.Println(res.Header["X-Auth-Refresh-Token"])
-	//fmt.Println(res.Header["Domain_uuid"])
+	// populate the auth map with the tokens
 	creds["token"] = res.Header["X-Auth-Access-Token"][0]
 	creds["refresh_token"] = res.Header["X-Auth-Refresh-Token"][0]
 	creds["domain"] = res.Header["Domain_uuid"][0]
-	fmt.Println(creds)
 
 	//response body
 	defer res.Body.Close()
