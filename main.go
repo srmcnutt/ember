@@ -20,11 +20,11 @@ var endPoints = make(map[string]string)
 
 func main() {
 	creds = getEnv()
+	banner()
 	initEndpoints()
 	getAuthToken(endPoints["auth"])
 	// need to init a second time now that we have the uuid for the domain
 	initEndpoints()
-	banner()
 	devices := getDevices()
 	printTable(devices)
 	fmt.Println("\n Total number of sensors: ", len(devices))
