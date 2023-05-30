@@ -1,4 +1,4 @@
-Ember is currently a tool written in Go that will query Cisco Firepower Management Center for a list of devices, then output a summarized list.
+Ember is a utility written in Go that will query Cisco Firepower Management Center for a list of devices, then output a summarized list.
 
 ## Requirements:
 To run it requires 3 environment variables to be set:
