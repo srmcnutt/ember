@@ -22,8 +22,8 @@ var creds = make(map[string]string)
 var endPoints = make(map[string]string)
 
 func main() {
-	creds = getEnv()
 	banner()
+	creds = getCreds()
 	initEndpoints()
 	if !strings.Contains(creds["fmc_host"], "cdo.cisco.com") {
 		getAuthToken(endPoints["auth"])
@@ -32,35 +32,83 @@ func main() {
 	}
 	// need to init a second time now that we have the uuid for the domain
 	initEndpoints()
+	// choice = menu()
 	devices := getDevices()
 	printTable(devices)
 	fmt.Println("\n Total number of sensors: ", len(devices))
 }
 
 // read in environment vars to connect to FMC
-func getEnv() map[string]string {
+func getCreds() map[string]string {
 	creds["fmc_host"] = os.Getenv("FMC_HOST")
 	creds["fmc_user"] = os.Getenv("FMC_USER")
 	creds["fmc_password"] = os.Getenv("FMC_PASSWORD")
 
 	if creds["fmc_host"] == "" {
-		fmt.Println("FMC_HOST Environment Variable missing!")
-		os.Exit(1)
+		//fmt.Println("FMC_HOST Environment Variable not set")
+		var fmc_host string
+		fmt.Print("Enter FMC Hostname (c to cancel and exit): ")
+		fmt.Scanln(&fmc_host)
+		creds["fmc_host"] = fmc_host
+		if fmc_host == "c" {
+			fmt.Println("Exiting...")
+			os.Exit(1)
+		}
+		//fmt.Println("FMC_HOST set to:", fmc_host)
 	}
 
 	if creds["fmc_user"] == "" {
 		if !strings.Contains(creds["fmc_host"], "cdo.cisco.com") {
-			fmt.Println("FMC_USER Environment Variable missing!")
-			os.Exit(1)
+			//fmt.Println("FMC_USER Environment Variable not set")
+			var fmc_user string
+			fmt.Print("Enter FMC Username (c to cancel and exit): ")
+			fmt.Scanln(&fmc_user)
+			creds["fmc_user"] = fmc_user
+			if fmc_user == "c" {
+				fmt.Println("Exiting...")
+				os.Exit(1)
+			}
+			//fmt.Println("FMC_USER set to:", fmc_user)
 		}
 	}
 
 	if creds["fmc_password"] == "" {
-		fmt.Println("FMC_PASSWORD Environment Variable missing!")
-		os.Exit(1)
+		//fmt.Println("FMC_PASSWORD Environment Variable not set")
+		var fmc_password string
+		fmt.Print("Enter FMC Password (c to cancel and exit): ")
+		fmt.Scanln(&fmc_password)
+		creds["fmc_password"] = fmc_password
+		if fmc_password == "c" {
+			fmt.Println("Exiting...")
+			os.Exit(1)
+		}
+		//fmt.Println("FMC_PASSWORD set")
 	}
 	return creds
 }
+
+// func menu() int {
+// 	r := bufio.NewReader(os.Stdin)
+// 	menuOptions := []string{
+// 		"0. Exit",
+// 		"1. Get Device List",
+// 		"2. Get Device Details",
+// 	}
+
+// 	for _, option := range menuOptions {
+// 		fmt.Println(option)
+// 	}
+// 	fmt.Print("Enter number of your choice: ")
+// 	input, err := r.ReadString('n')
+// 	if err != nil {
+// 		fmt.Println(err)
+// 	}
+// 	choice, err := strconv.Atoi(strings.TrimSpace(input))
+// 	if err != nil {
+// 		fmt.Println("Invalid input - please enter a number")
+// 		}
+
+// }
 
 // print banner
 func banner() {
