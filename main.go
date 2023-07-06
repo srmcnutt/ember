@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"crypto/tls"
 	"encoding/json"
 	"fmt"
@@ -9,6 +10,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
 
 	"github.com/fatih/color"
@@ -24,18 +26,20 @@ var endPoints = make(map[string]string)
 func main() {
 	banner()
 	creds = getCreds()
+	color.Cyan("Authenticating to FMC, hang tight...\n")
+	fmt.Println("")
 	initEndpoints()
 	if !strings.Contains(creds["fmc_host"], "cdo.cisco.com") {
 		getAuthToken(endPoints["auth"])
 	} else {
 		creds["domain"] = getDomains(creds["fmc_host"])[0].ID
 	}
+
 	// need to init a second time now that we have the uuid for the domain
 	initEndpoints()
-	// choice = menu()
-	devices := getDevices()
-	printTable(devices)
-	fmt.Println("\n Total number of sensors: ", len(devices))
+
+	// launch menu
+	menu()
 }
 
 // read in environment vars to connect to FMC
@@ -47,7 +51,7 @@ func getCreds() map[string]string {
 	if creds["fmc_host"] == "" {
 		//fmt.Println("FMC_HOST Environment Variable not set")
 		var fmc_host string
-		fmt.Print("Enter FMC Hostname (c to cancel and exit): ")
+		fmt.Print("Enter FMC Hostname or Address (c to cancel and exit): ")
 		fmt.Scanln(&fmc_host)
 		creds["fmc_host"] = fmc_host
 		if fmc_host == "c" {
@@ -87,28 +91,51 @@ func getCreds() map[string]string {
 	return creds
 }
 
-// func menu() int {
-// 	r := bufio.NewReader(os.Stdin)
-// 	menuOptions := []string{
-// 		"0. Exit",
-// 		"1. Get Device List",
-// 		"2. Get Device Details",
-// 	}
+func menu() {
 
-// 	for _, option := range menuOptions {
-// 		fmt.Println(option)
-// 	}
-// 	fmt.Print("Enter number of your choice: ")
-// 	input, err := r.ReadString('n')
-// 	if err != nil {
-// 		fmt.Println(err)
-// 	}
-// 	choice, err := strconv.Atoi(strings.TrimSpace(input))
-// 	if err != nil {
-// 		fmt.Println("Invalid input - please enter a number")
-// 		}
+	menuOptions := []string{
+		"1. Get FMC Details",
+		"2. Get Device List",
+		"3. Get Device Details",
+		"0. Exit",
+	}
 
-// }
+	for {
+		for _, option := range menuOptions {
+			fmt.Println(option)
+		}
+		r := bufio.NewReader(os.Stdin)
+		fmt.Print("Enter number of your choice: ")
+		input, _, err := r.ReadRune()
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		choice := int(input - 48)
+		//choice, err = strconv.Atoi(strings.TrimSpace(input))
+		if err != nil {
+			fmt.Println("There is an error: ", err)
+		}
+
+		switch choice {
+		case 1:
+			//aaa
+		case 2:
+			devices := getDevices()
+			fmt.Print("\n")
+			printTable(devices)
+			color.Blue("\nTotal number of sensors: %s", strconv.Itoa(len(devices)))
+			fmt.Print("\n")
+		case 3:
+			//aaa
+		case 0:
+			fmt.Println("Exiting...")
+			os.Exit(0)
+		default:
+			fmt.Println("Invalid input - please enter a number")
+		}
+	}
+}
 
 // print banner
 func banner() {
