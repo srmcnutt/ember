@@ -367,9 +367,5 @@ var art string = `
 ╚══════╝╚═╝     ╚═╝╚═════╝ ╚══════╝╚═╝  ╚═╝ v0.1
                                            
 Ember - A Cisco FMC API Client by Steven McNutt CCIE #6495
-  { 
-    Twitter:  @densem0de,
-    Github:   srmcnutt,
-    mastodon: @densemode@infosec.exchange,
-  }
+Github:	srmcnutt/ember
 `
