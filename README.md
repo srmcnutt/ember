@@ -11,7 +11,7 @@ Embers checks for the following environment variables on startup:
 - FMC_USER
 - FMC_PASSWORD
 
-If any of them are not present, Emeber will interactively prompt you for the information.
+If any of them are not present, Ember will interactively prompt you for the information.
 
 
 

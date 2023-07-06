@@ -346,11 +346,11 @@ func printTable(devices []Device) {
 	headerFmt := color.New(color.FgGreen, color.Underline).SprintfFunc()
 	columnFmt := color.New(color.FgYellow).SprintfFunc()
 
-	tbl := table.New("Name", "Model", "Software Version", "Is Connected")
+	tbl := table.New("Name", "Model", "Version", "Serial #", "Is Connected")
 	tbl.WithHeaderFormatter(headerFmt).WithFirstColumnFormatter(columnFmt)
 
 	for _, device := range devices {
-		tbl.AddRow(device.Name, device.Model, device.SwVersion, device.IsConnected)
+		tbl.AddRow(device.Name, device.Model, device.SwVersion, device.Metadata.DeviceSerialNumber, device.IsConnected)
 	}
 
 	tbl.Print()
