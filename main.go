@@ -15,6 +15,7 @@ import (
 
 	"github.com/fatih/color"
 	"github.com/rodaine/table"
+	"golang.org/x/crypto/ssh/terminal"
 )
 
 // store credentials in a map for easy retrieval
@@ -80,7 +81,13 @@ func getCreds() map[string]string {
 		//fmt.Println("FMC_PASSWORD Environment Variable not set")
 		var fmc_password string
 		fmt.Print("Enter FMC Password (c to cancel and exit): ")
-		fmt.Scanln(&fmc_password)
+		// fmt.Scanln(&fmc_password)
+		bytePassword, err := terminal.ReadPassword(0)
+		if err != nil {
+			log.Fatal(err)
+		}
+		fmt.Println("")
+		fmc_password = string(bytePassword)
 		creds["fmc_password"] = fmc_password
 		if fmc_password == "c" {
 			fmt.Println("Exiting...")

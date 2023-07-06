@@ -23,7 +23,6 @@ Binaries for windows, mac, and linux are available under the binaries folder.
 
 ## TODOs
 - Show FMC information
-- Update device list to show serial number
 - Device details option
 - unit tests
 - additional features (shoot me some ideas or even better make a pull request)
