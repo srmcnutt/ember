@@ -16,8 +16,8 @@ If any of them are not present, Emeber will interactively prompt you for the inf
 
 
 ## Usage:
-(optional) Set the environment variables
-Run the program
+- (optional) Set the environment variables
+- Run the program
 
 Binaries for windows, mac, and linux are available under the binaries folder.
 
