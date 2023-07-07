@@ -24,6 +24,13 @@ var creds = make(map[string]string)
 // store api endpoints in a map for easy retrieval
 var endPoints = make(map[string]string)
 
+// set colors
+var yellow = color.New(color.FgYellow).SprintFunc()
+var red = color.New(color.FgRed).SprintFunc()
+var green = color.New(color.FgGreen).SprintFunc()
+var cyan = color.New(color.FgCyan).SprintFunc()
+var blue = color.New(color.FgBlue).SprintFunc()
+
 func main() {
 	banner()
 	creds = getCreds()
@@ -126,7 +133,16 @@ func menu() {
 
 		switch choice {
 		case 1:
-			getFMCInfo()
+			fmc := getFMCInfo()
+			fmt.Println("")
+			fmt.Println(green("FMC Name:"), fmc.Hostname)
+			fmt.Println(green("Software Version:"), fmc.ServerVersion)
+			fmt.Println(green("Serial Number:"), fmc.SerialNumber)
+			fmt.Println(green("VDB Version:"), fmc.VdbVersion)
+			fmt.Println(green("SRU Version:"), fmc.SruVersion)
+			fmt.Println(green("Platform:"), fmc.Platform)
+			fmt.Println(blue("System Uptime:"), red(fmc.Uptime))
+			fmt.Println("")
 		case 2:
 			devices := getDevices()
 			fmt.Print("\n")
@@ -134,9 +150,59 @@ func menu() {
 			color.Blue("\nTotal number of sensors: %s", strconv.Itoa(len(devices)))
 			fmt.Print("\n")
 		case 3:
-			//aaa
+			devices := getDevices()
+			for {
+				fmt.Println("")
+				for x, device := range devices {
+					fmt.Printf("%s) %s", strconv.Itoa(x+1), device.Name)
+					fmt.Println("")
+				}
+
+				r := bufio.NewReader(os.Stdin)
+				fmt.Print("Select a device to get details for (0 to exit): ")
+				input, _, err := r.ReadRune()
+
+				if err != nil {
+					fmt.Println(err)
+				}
+
+				choice := int(input - 48)
+				if err != nil {
+					fmt.Println("There is an error: ", err)
+				}
+
+				if choice > 0 && choice <= len(devices) {
+					fmt.Println("")
+					fmt.Println(blue("Getting details for: "), green(devices[choice-1].Name))
+					fmt.Println("")
+					fmt.Println(green("Name:"), devices[choice-1].Name)
+					fmt.Println(green("Hostname:"), devices[choice-1].HostName)
+					fmt.Println(green("Model:"), devices[choice-1].Model)
+					fmt.Println(green("Software Version:"), devices[choice-1].SwVersion)
+					fmt.Println(green("Serial #:"), devices[choice-1].Metadata.DeviceSerialNumber)
+					fmt.Println(green("Health Status:"), devices[choice-1].HealthStatus)
+					fmt.Println(green("Access Policy:"), devices[choice-1].AccessPolicy.Name)
+					fmt.Println(green("Mode:"), devices[choice-1].FtdMode)
+					fmt.Println(green("Snort Version:"), devices[choice-1].Metadata.SnortVersion)
+					fmt.Println(green("VDB Version"), devices[choice-1].Metadata.VdbVersion)
+
+				}
+				if choice == 0 {
+					fmt.Println("")
+					color.Red("Returning to main menu...")
+					fmt.Println("")
+					break
+				}
+
+				if choice > len(devices) {
+					fmt.Println("")
+					color.Red("Invalid selection - please try again")
+					fmt.Println("")
+				}
+			}
 		case 0:
-			fmt.Println("Exiting...")
+			fmt.Println("")
+			color.Red("Exiting...")
 			os.Exit(0)
 		default:
 			fmt.Println("Invalid input - please enter a number")
@@ -323,16 +389,16 @@ func getAuthToken(url string) {
 	defer res.Body.Close()
 }
 
-func getFMCInfo() {
-	var fmcinfo FMCInfo
+func getFMCInfo() FMCInfo {
+	var fmcversion FMCVersion
 
 	res := fmcCall(endPoints["fmcinfo"])
-	error := json.Unmarshal(res, &fmcinfo)
+	error := json.Unmarshal(res, &fmcversion)
 	if error != nil {
 		log.Println(error)
 	}
 
-	fmt.Println(fmcinfo)
+	return fmcversion.FMCInfo[0]
 
 }
 

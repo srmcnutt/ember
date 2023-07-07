@@ -22,8 +22,6 @@ If any of them are not present, Ember will interactively prompt you for the info
 Binaries for windows, mac, and linux are available under the binaries folder.
 
 ## TODOs
-- Show FMC information
-- Device details option
 - unit tests
 - additional features (shoot me some ideas or even better make a pull request)
 
