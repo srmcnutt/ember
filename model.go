@@ -89,3 +89,19 @@ type Device struct {
 	} `json:"metadata"`
 	SnortEngine string `json:"snortEngine"`
 }
+
+type FMCInfo struct {
+	Items []struct {
+		ServerVersion string `json:"serverVersion"`
+		GeoVersion    string `json:"geoVersion"`
+		VdbVersion    string `json:"vdbVersion"`
+		SruVersion    string `json:"sruVersion"`
+		LspVersion    string `json:"lspVersion"`
+		Hostname      string `json:"hostname"`
+		Model         string `json:"model"`
+		SerialNumber  string `json:"serialNumber"`
+		Uptime        string `json:"uptime"`
+		Platform      string `json:"platform"`
+		Type          string `json:"type"`
+	} `json:"items"`
+}

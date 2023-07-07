@@ -101,7 +101,7 @@ func getCreds() map[string]string {
 func menu() {
 
 	menuOptions := []string{
-		"1. Get FMC Details",
+		"1. Get FMC Info",
 		"2. Get Device List",
 		"3. Get Device Details",
 		"0. Exit",
@@ -126,7 +126,7 @@ func menu() {
 
 		switch choice {
 		case 1:
-			//aaa
+			getFMCInfo()
 		case 2:
 			devices := getDevices()
 			fmt.Print("\n")
@@ -153,6 +153,7 @@ func banner() {
 func initEndpoints() {
 	endPoints["auth"] = fmt.Sprintf("https://%s/api/fmc_platform/v1/auth/generatetoken", creds["fmc_host"])
 	endPoints["devices"] = fmt.Sprintf("https://%s/api/fmc_config/v1/domain/%s/devices/devicerecords", creds["fmc_host"], creds["domain"])
+	endPoints["fmcinfo"] = fmt.Sprintf("https://%s/api/fmc_platform/v1/info/serverversion", creds["fmc_host"])
 }
 
 // generic function to make rest api call to FMC and pass the body back
@@ -323,6 +324,15 @@ func getAuthToken(url string) {
 }
 
 func getFMCInfo() {
+	var fmcinfo FMCInfo
+
+	res := fmcCall(endPoints["fmcinfo"])
+	error := json.Unmarshal(res, &fmcinfo)
+	if error != nil {
+		log.Println(error)
+	}
+
+	fmt.Println(fmcinfo)
 
 }
 
