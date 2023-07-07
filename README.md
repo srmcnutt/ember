@@ -1,4 +1,8 @@
-Ember is a utility written in Go that will query Cisco Firepower Management Center for a list of devices, then output a summarized list.
+
+
+Ember is a utility written in Go that will query Cisco Firepower Management Center and return useful information in text format.
+
+![Ember Demo](images/ember_demo.gif)
 
 ## Requirements:
 REST API needs to be enabled on Firewall Management Center.
