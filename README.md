@@ -1,6 +1,6 @@
 
 
-Ember is a utility written in Go that will queries Cisco Firepower Management Center and return useful information in text format.
+Ember is a utility written in Go that queries Cisco Firepower Management Center and return useful information in text format.
 
 ![Ember Demo](images/ember_demo.gif)
 
