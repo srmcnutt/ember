@@ -141,14 +141,18 @@ func menu() {
 			fmt.Println(green("VDB Version:"), fmc.VdbVersion)
 			fmt.Println(green("SRU Version:"), fmc.SruVersion)
 			fmt.Println(green("Platform:"), fmc.Platform)
-			fmt.Println(blue("System Uptime:"), red(fmc.Uptime))
+			fmt.Println(green("System Uptime:"), red(fmc.Uptime))
 			fmt.Println("")
+			fmt.Println("Press enter to continue...")
+			fmt.Scanln()
 		case 2:
 			devices := getDevices()
 			fmt.Print("\n")
 			printTable(devices)
-			color.Blue("\nTotal number of sensors: %s", strconv.Itoa(len(devices)))
-			fmt.Print("\n")
+			color.Green("\nTotal number of sensors: %s", strconv.Itoa(len(devices)))
+			fmt.Println("")
+			fmt.Println("Press enter to continue...")
+			fmt.Scanln()
 		case 3:
 			devices := getDevices()
 			for {
@@ -173,7 +177,7 @@ func menu() {
 
 				if choice > 0 && choice <= len(devices) {
 					fmt.Println("")
-					fmt.Println(blue("Getting details for: "), green(devices[choice-1].Name))
+					fmt.Println(yellow("Getting details for: "), green(devices[choice-1].Name))
 					fmt.Println("")
 					fmt.Println(green("Name:"), devices[choice-1].Name)
 					fmt.Println(green("Hostname:"), devices[choice-1].HostName)
@@ -185,6 +189,9 @@ func menu() {
 					fmt.Println(green("Mode:"), devices[choice-1].FtdMode)
 					fmt.Println(green("Snort Version:"), devices[choice-1].Metadata.SnortVersion)
 					fmt.Println(green("VDB Version"), devices[choice-1].Metadata.VdbVersion)
+					fmt.Println("")
+					fmt.Println("Press enter to continue...")
+					fmt.Scanln()
 
 				}
 				if choice == 0 {

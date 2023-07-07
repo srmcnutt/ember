@@ -13,6 +13,16 @@ Embers checks for the following environment variables on startup:
 
 If any of them are not present, Ember will interactively prompt you for the information.
 
+                                    ** note **
+The library used to hide the password for interactive entry is not compatible with windows. 
+For windows set the FMC_Password environment variable for the time being.  Here's an example of how to do it in powershell:
+
+```
+$env:FMC_PASSWORD="mypassword123"
+$env:FMC_HOST="10.1.1.1"
+$env:FMC_USER="admin"
+```
+
 
 
 ## Usage:
@@ -24,6 +34,7 @@ Binaries for windows, mac, and linux are available under the binaries folder.
 ## TODOs
 - unit tests
 - additional features (shoot me some ideas or even better make a pull request)
+- allow interactive password entry on windows
 
 
 
