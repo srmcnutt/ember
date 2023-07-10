@@ -1,6 +1,6 @@
+[![published](https://static.production.devnetcloud.com/codeexchange/assets/images/devnet-published.svg)](https://developer.cisco.com/codeexchange/github/repo/srmcnutt/ember)
 
-
-Ember is a utility written in Go that queries Cisco Firepower Management Center and return useful information in text format.
+Ember is a utility written in Go that queries Cisco Firepower Management Center and returns useful information in text format.
 
 ![Ember Demo](images/ember_demo.gif)
 
@@ -39,6 +39,7 @@ Binaries for windows, mac, and linux are available under the binaries folder.
 - unit tests
 - additional features (shoot me some ideas or even better make a pull request)
 - allow interactive password entry on windows
+- Multi-Domain support
 
 
 
