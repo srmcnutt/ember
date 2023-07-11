@@ -1,4 +1,4 @@
-module github.com/srmcnutt/fire-t
+module github.com/srmcnutt/ember
 
 go 1.20
 
